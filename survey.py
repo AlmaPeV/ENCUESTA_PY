@@ -6,21 +6,24 @@ samples = ["Sample 1", "Sample 2", "Sample 3", "Sample 4", "Sample 5",
            "Sample 6", "Sample 7", "Sample 8", "Sample 9", "Sample 10"]
 
 # Inicializar variables de sesión
-session_vars = {
-    'authenticated': False,
-    'survey_started': False,
-    'survey_completed': False,
-    'round_number': 1,
-    'remaining_samples': samples.copy(),
-    'selected_samples': [],
-    'rounds_info': [],
-    'participant_name': "",
-    'current_pair': []
-}
-
-for var, default in session_vars.items():
-    if var not in st.session_state:
-        st.session_state[var] = default
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+if 'survey_started' not in st.session_state:
+    st.session_state.survey_started = False
+if 'survey_completed' not in st.session_state:
+    st.session_state.survey_completed = False
+if 'round_number' not in st.session_state:
+    st.session_state.round_number = 1
+if 'remaining_samples' not in st.session_state:
+    st.session_state.remaining_samples = samples.copy()
+if 'selected_samples' not in st.session_state:
+    st.session_state.selected_samples = []
+if 'rounds_info' not in st.session_state:
+    st.session_state.rounds_info = []
+if 'participant_name' not in st.session_state:
+    st.session_state.participant_name = ""
+if 'current_pair' not in st.session_state:
+    st.session_state.current_pair = []
 
 # Función para manejar la encuesta
 def conduct_survey():
@@ -43,7 +46,10 @@ def conduct_survey():
 
         # Cuando se presione "Next Round", guardar la selección y avanzar
         if st.button("Next Round", key=f"next_button_{round_number}"):
-            selected_sample = st.session_state.current_pair[int(choice)-1]
+            if choice == '1':
+                selected_sample = st.session_state.current_pair[0]
+            else:
+                selected_sample = st.session_state.current_pair[1]
 
             # Guardar el historial de esta ronda
             st.session_state.rounds_info.append({
@@ -104,5 +110,4 @@ if st.session_state.survey_completed:
         st.write(f"Round {info['round']}: Appeared Samples: {info['appeared_samples']}, Selected Sample: {info['selected_sample']}")
 
     if st.button("Finish Survey"):
-        st.session_state.update(session_vars)
         st.write("Thank you for participating!")
